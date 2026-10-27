@@ -1,0 +1,13 @@
+node_modules/
+.expo/
+dist/
+web-build/
+android/
+ios/
+.env
+.env.*
+*.log
+expo-env.d.ts
+
+# Documentos personales (no versionar)
+Constancia de CUIL.pdf

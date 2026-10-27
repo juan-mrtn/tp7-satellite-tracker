@@ -1,0 +1,73 @@
+{
+  "expo": {
+    "name": "Satellite Tracker",
+    "slug": "satellite-tracker",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "satellitetracker",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#05070d",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "ar.edu.uader.satellitetracker",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "package": "ar.edu.uader.satellitetracker",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "POST_NOTIFICATIONS",
+        "SCHEDULE_EXACT_ALARM",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#05070d"
+      }
+    },
+    "plugins": [
+      "expo-router",
+      "expo-dev-client",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Satellite Tracker usa tu ubicación para calcular cuándo y hacia dónde ver cada satélite.",
+          "isIosBackgroundLocationEnabled": false,
+          "isAndroidBackgroundLocationEnabled": false,
+          "isAndroidForegroundServiceEnabled": false
+        }
+      ],
+      [
+        "expo-sensors",
+        {
+          "motionPermission": "Satellite Tracker usa el magnetómetro y el giroscopio para el modo brújula."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#4fd1c5",
+          "defaultChannel": "passes"
+        }
+      ],
+      "expo-sqlite",
+      "expo-secure-store",
+      "expo-background-task",
+      "@maplibre/maplibre-react-native"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "icon": "./assets/icon.png",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "8be38180-2138-4f70-92fb-3364583eec2b"
+      }
+    }
+  }
+}
