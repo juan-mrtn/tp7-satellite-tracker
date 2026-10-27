@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import {
   Camera,
   GeoJSONSource,
@@ -69,6 +69,8 @@ export default function MapScreen() {
   const cameraRef = useRef<CameraRef>(null);
   const [region, setRegion] = useState<MapRegion | null>(null);
   const [constellationStatus, setConstellationStatus] = useState<string | null>(null);
+  // Panel inferior minimizable para dejar ver el mapa completo.
+  const [collapsed, setCollapsed] = useState(false);
 
   const live = useLiveState(engine, observer, settings.positionRefreshSec);
   const position = live?.position ?? null;
@@ -187,7 +189,28 @@ export default function MapScreen() {
       </SafeAreaView>
 
       <View style={s.bottom} pointerEvents="box-none">
-        <Card style={s.panel}>
+        <Card style={collapsed ? { ...s.panel, ...s.panelCollapsed } : s.panel}>
+          <Pressable
+            onPress={() => setCollapsed((c) => !c)}
+            hitSlop={8}
+            accessibilityRole="button"
+            accessibilityLabel={collapsed ? 'Mostrar panel' : 'Minimizar panel'}
+            style={s.handleRow}
+          >
+            <View style={s.handleBar} />
+            {collapsed ? (
+              <Text style={s.summary} numberOfLines={1}>
+                {position
+                  ? `${formatLat(position.latitude)} ${formatLon(position.longitude)} · ${Math.round(position.altitudeKm).toLocaleString('es-AR')} km`
+                  : 'Sin posición'}
+                {live?.look ? ` · El ${Math.round(live.look.elevation)}°` : ''}
+              </Text>
+            ) : null}
+            <Text style={s.handleLabel}>{collapsed ? '▴' : '▾'}</Text>
+          </Pressable>
+
+          {collapsed ? null : (
+          <>
           <View style={s.statsRow}>
             <Stat
               label="Posición"
@@ -243,6 +266,8 @@ export default function MapScreen() {
               <Button label="Ver pases" onPress={() => router.push('/passes')} disabled={!engine} />
             </View>
           </View>
+          </>
+          )}
         </Card>
       </View>
     </View>
@@ -265,7 +290,12 @@ const s = StyleSheet.create({
   },
   titleSub: { color: colors.textMuted, fontSize: 13, fontWeight: '600' },
   bottom: { position: 'absolute', left: 0, right: 0, bottom: 0, padding: spacing.md },
-  panel: { backgroundColor: 'rgba(14,21,34,0.95)', gap: spacing.md, padding: spacing.md },
+  panel: { backgroundColor: 'rgba(14,21,34,0.95)', gap: spacing.md, padding: spacing.md, paddingTop: spacing.sm },
+  panelCollapsed: { paddingBottom: spacing.sm },
+  handleRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, minHeight: 28 },
+  handleBar: { width: 32, height: 4, borderRadius: 2, backgroundColor: colors.border },
+  summary: { flex: 1, color: colors.text, fontSize: 13, fontWeight: '600' },
+  handleLabel: { marginLeft: 'auto', color: colors.textMuted, fontSize: 18, paddingHorizontal: spacing.xs },
   statsRow: { flexDirection: 'row', gap: spacing.md },
   chips: { gap: spacing.sm, paddingRight: spacing.md },
   fpRow: { gap: spacing.xs },
